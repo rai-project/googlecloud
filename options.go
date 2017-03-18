@@ -1,6 +1,10 @@
 package googlecloud
 
 import (
+	"encoding/json"
+	"io/ioutil"
+
+	"github.com/Unknwon/com"
 	"github.com/rai-project/config"
 	"github.com/rai-project/utils"
 )
@@ -49,6 +53,34 @@ func NewOptions(opts ...Option) *Options {
 	}
 
 	return o
+}
+
+func FromDefaultConfigurationFile() Option {
+	return func(o *Options) {
+		filename, err := DefaultConfigurationSource()
+		if err != nil {
+			return
+		}
+		FromConfigurationFile(filename)(o)
+	}
+}
+
+func FromConfigurationFile(filename string) Option {
+	return func(o *Options) {
+		if !com.IsFile(filename) {
+			return
+		}
+		buf, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return
+		}
+
+		var d Options
+		if err := json.Unmarshal(buf, &d); err != nil {
+			return
+		}
+		*o = d
+	}
 }
 
 func Type(s string) Option {
