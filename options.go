@@ -1,5 +1,10 @@
 package googlecloud
 
+import (
+	"github.com/rai-project/config"
+	"github.com/rai-project/utils"
+)
+
 type Options struct {
 	Type                    string `json:"type,omitempty"`
 	ProjectID               string `json:"project_id,omitempty"`
@@ -14,6 +19,16 @@ type Options struct {
 }
 
 type Option func(*Options)
+
+func decrypt(s string) string {
+	if utils.IsEncryptedString(s) {
+		c, err := utils.DecryptStringBase64(config.App.Secret, s)
+		if err == nil {
+			return c
+		}
+	}
+	return s
+}
 
 func NewOptions(opts ...Option) *Options {
 	o := &Options{
@@ -44,54 +59,54 @@ func Type(s string) Option {
 
 func ProjectID(s string) Option {
 	return func(o *Options) {
-		o.ProjectID = s
+		o.ProjectID = decrypt(s)
 	}
 }
 
 func PrivateKeyID(s string) Option {
 	return func(o *Options) {
-		o.PrivateKeyID = s
+		o.PrivateKeyID = decrypt(s)
 	}
 }
 
 func PrivateKey(s string) Option {
 	return func(o *Options) {
-		o.PrivateKey = s
+		o.PrivateKey = decrypt(s)
 	}
 }
 
 func ClientEmail(s string) Option {
 	return func(o *Options) {
-		o.ClientEmail = s
+		o.ClientEmail = decrypt(s)
 	}
 }
 
 func ClientID(s string) Option {
 	return func(o *Options) {
-		o.ClientID = s
+		o.ClientID = decrypt(s)
 	}
 }
 
 func AuthURI(s string) Option {
 	return func(o *Options) {
-		o.AuthURI = s
+		o.AuthURI = decrypt(s)
 	}
 }
 
 func TokenURI(s string) Option {
 	return func(o *Options) {
-		o.TokenURI = s
+		o.TokenURI = decrypt(s)
 	}
 }
 
 func AuthProviderX509CertURL(s string) Option {
 	return func(o *Options) {
-		o.AuthProviderX509CertURL = s
+		o.AuthProviderX509CertURL = decrypt(s)
 	}
 }
 
 func ClientX509CertURL(s string) Option {
 	return func(o *Options) {
-		o.ClientX509CertURL = s
+		o.ClientX509CertURL = decrypt(s)
 	}
 }
