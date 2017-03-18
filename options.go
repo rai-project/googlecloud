@@ -142,3 +142,11 @@ func ClientX509CertURL(s string) Option {
 		o.ClientX509CertURL = decrypt(s)
 	}
 }
+
+func (o *Options) Bytes() []byte {
+	buf, err := json.Marshal(o)
+	if err != nil {
+		return []byte{}
+	}
+	return buf
+}
