@@ -3,6 +3,7 @@ package googlecloud
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strings"
 
 	"github.com/Unknwon/com"
 	"github.com/rai-project/config"
@@ -28,24 +29,24 @@ func decrypt(s string) string {
 	if utils.IsEncryptedString(s) {
 		c, err := utils.DecryptStringBase64(config.App.Secret, s)
 		if err == nil {
-			return c
+			return strings.TrimSpace(c)
 		}
 	}
-	return s
+	return strings.TrimSpace(s)
 }
 
 func NewOptions(opts ...Option) *Options {
 	o := &Options{
-		Type:                    Config.Type,
-		ProjectID:               Config.ProjectID,
-		PrivateKeyID:            Config.PrivateKeyID,
-		PrivateKey:              Config.PrivateKey,
-		ClientEmail:             Config.ClientEmail,
-		ClientID:                Config.ClientID,
-		AuthURI:                 Config.AuthURI,
-		TokenURI:                Config.TokenURI,
-		AuthProviderX509CertURL: Config.AuthProviderX509CertURL,
-		ClientX509CertURL:       Config.ClientX509CertURL,
+		Type:                    decrypt(Config.Type),
+		ProjectID:               decrypt(Config.ProjectID),
+		PrivateKeyID:            decrypt(Config.PrivateKeyID),
+		PrivateKey:              decrypt(Config.PrivateKey),
+		ClientEmail:             decrypt(Config.ClientEmail),
+		ClientID:                decrypt(Config.ClientID),
+		AuthURI:                 decrypt(Config.AuthURI),
+		TokenURI:                decrypt(Config.TokenURI),
+		AuthProviderX509CertURL: decrypt(Config.AuthProviderX509CertURL),
+		ClientX509CertURL:       decrypt(Config.ClientX509CertURL),
 	}
 
 	for _, f := range opts {
